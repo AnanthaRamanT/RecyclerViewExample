@@ -3,7 +3,6 @@ package com.example.recyclerviewdemo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
@@ -21,9 +20,8 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recycle;
     LinearLayoutManager manager;
     RecycleAdapter adapter;
-    int currentitems,totalitems,scrolloutitems;
+    int currentitems,totalitems,lastitem;
     ArrayList<String> list;
-    Boolean scroll=false;
     ProgressBar progressbar;
 
     @Override
@@ -43,29 +41,24 @@ public class MainActivity extends AppCompatActivity {
         recycle.setAdapter(adapter);
 
         recycle.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if(newState== AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
-
-                    scroll=true;
-
-                }
-            }
 
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 currentitems=manager.getChildCount();
                 totalitems=manager.getItemCount();
-                scrolloutitems=manager.findFirstCompletelyVisibleItemPosition();
+                lastitem=manager.findLastVisibleItemPosition();
 
-                if(scroll && (currentitems+scrolloutitems==totalitems)){
 
-                      scroll=false;
-                      data();
+                if(lastitem==totalitems-1){
+
+                    data();
 
                 }
+
+
+
+
             }
         });
     }
@@ -76,14 +69,14 @@ public class MainActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                for(int i=0;i<5;i++){
+                for(int i=1;i<=5;i++){
                     list.add(Math.round(Math.random())+1+"");
                     adapter.notifyDataSetChanged();
                     progressbar.setVisibility(View.GONE);
 
                 }
             }
-        },5000);
+        },1000);
 
 
     }
